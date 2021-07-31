@@ -59,13 +59,18 @@ For k = 1 To sheetnum
     ReDim uniquetickers((cellcount - 1))
     uniquetickers = Range(Cells(2, 9), Cells(cellcount, 9))
     
-    'Range("J2:J2836").Value = uniquetickers
     
     'declare variables for data storage
+    
+    'array to store start of year opening values for each ticker
     Dim startopen() As Variant
     ReDim startopen(0 To (cellcount - 1)) As Variant
+    
+    'array to store end of year closing values for each ticker
     Dim endclose() As Variant
     ReDim endclose(0 To (cellcount - 1)) As Variant
+    
+    'array to store running trade volume totals that grow as the nested loop iterates
     Dim runningvolume() As Variant
     ReDim runningvolume(0 To (cellcount - 1)) As Variant
     
@@ -77,10 +82,15 @@ For k = 1 To sheetnum
         runningvolume(i) = 0 'set an initial value to make things easier inside nested loop
         
         For j = 2 To (lastrow - 1)
+            'ticker that current outer loop is looking at
             Dim currentticker As String
-            currentticker = uniquetickers(i, 1)
+            currentticker = uniquetickers(i, 1)  'for some reason it would only accept this with a column index as well
+            
+            'ticker of the current row of data, for comparison to outer loop ticker
             Dim dataticker As String
             dataticker = wholedata(j, 1)
+            
+            'ticker from the previous row of data, for use in determining when all iterations with the target ticker have been completed and the nested loop can end
             Dim prevticker As String
             prevticker = wholedata(j - 1, 1)
             
